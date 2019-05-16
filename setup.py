@@ -5,7 +5,7 @@ setup(
     version='',
     packages=['lmdb_dataset'],
     install_requires=[
-        'pytorch>=1.0.0',
+        # 'pytorch',
         'lmdb>=0.94.0',
         'pyarrow>=0.13.0'
     ],
