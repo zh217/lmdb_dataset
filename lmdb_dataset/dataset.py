@@ -13,7 +13,8 @@ class LMDBDataset(Dataset):
         self.db_path = db_path
         self.env = lmdb.open(db_path, subdir=os.path.isdir(db_path),
                              readonly=True, lock=False,
-                             readahead=False, meminit=False)
+                             readahead=False, meminit=False,
+                             map_size=map_size)
         with self.env.begin(write=False) as txn:
             self.length = pyarrow.deserialize(txn.get(b'__len__'))
             try:
