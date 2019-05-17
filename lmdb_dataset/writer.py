@@ -25,9 +25,8 @@ class LMDBDatasetWriter:
         self.count += 1
         return next_key
 
-    def write_len(self):
-        with self.db.begin(write=True) as txn:
-            txn.put(b'__len__', pyarrow.serialize(self.count).to_buffer())
+    def write_len(self, txn):
+        txn.put(b'__len__', pyarrow.serialize(self.count).to_buffer())
 
     def write_data(self, elements, *, commit_every=100):
         it = iter(elements)
@@ -42,7 +41,7 @@ class LMDBDatasetWriter:
                         txn.put(self.get_next_key(), payload)
                     except StopIteration:
                         processing = False
-            self.write_len()
+                self.write_len(txn)
 
     def close(self):
         self.db.sync()
