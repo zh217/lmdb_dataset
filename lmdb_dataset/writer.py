@@ -7,7 +7,7 @@ from lmdb_dataset.dataset import LMDBDataset
 
 
 class LMDBDatasetWriter:
-    def __init__(self, dataset_path, map_size=1099511627776 * 2):
+    def __init__(self, dataset_path, map_size=1099511627776 * 10):
         try:
             os.makedirs(dataset_path)
             self.count = 0
@@ -18,7 +18,7 @@ class LMDBDatasetWriter:
 
         self.db = lmdb.open(dataset_path, subdir=True,
                             map_size=map_size, readonly=False,
-                            meminit=False, map_async=True)
+                            meminit=False, map_async=True, lock=False)
 
     def get_next_key(self):
         next_key = encode_key(self.count)
