@@ -9,12 +9,12 @@ from .utils import encode_key
 
 
 class LMDBDataset(Dataset):
-    def __init__(self, db_path, subset_n=None):
+    def __init__(self, db_path, subset_n=None, readahead=True):
         super().__init__()
         self.db_path = db_path
         self.env = lmdb.open(db_path, subdir=os.path.isdir(db_path),
                              readonly=True, lock=False,
-                             readahead=False, meminit=False)
+                             readahead=readahead, meminit=False)
         with self.env.begin(write=False) as txn:
             self.length = pyarrow.deserialize(txn.get(b'__len__'))
             try:
