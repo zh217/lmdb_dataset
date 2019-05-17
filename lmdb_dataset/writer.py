@@ -39,6 +39,7 @@ class LMDBDatasetWriter:
                     try:
                         payload = pyarrow.serialize(next(it)).to_buffer()
                         txn.put(self.get_next_key(), payload)
+                        del payload
                     except StopIteration:
                         processing = False
                 self.write_len(txn)
