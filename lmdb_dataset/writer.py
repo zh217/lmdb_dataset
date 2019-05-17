@@ -16,9 +16,8 @@ class LMDBDatasetWriter:
             self.count = len(old_dset)
             del old_dset
 
-        self.db = lmdb.open(dataset_path, subdir=True,
-                            map_size=map_size, readonly=False,
-                            meminit=False, map_async=True, lock=False)
+        self.dataset_path = dataset_path
+        self.map_size = map_size
 
     def get_next_key(self):
         next_key = encode_key(self.count)
@@ -29,21 +28,18 @@ class LMDBDatasetWriter:
         txn.put(b'__len__', pyarrow.serialize(self.count).to_buffer())
 
     def write_data(self, elements, *, commit_every=100):
-        it = iter(elements)
-
-        processing = True
-
-        while processing:
-            with self.db.begin(write=True) as txn:
-                for _ in range(commit_every):
-                    try:
-                        payload = pyarrow.serialize(next(it)).to_buffer()
-                        txn.put(self.get_next_key(), payload)
-                        del payload
-                    except StopIteration:
-                        processing = False
-                self.write_len(txn)
-
-    def close(self):
-        self.db.sync()
-        self.db.close()
+        with lmdb.open(self.dataset_path, subdir=True,
+                       map_size=self.map_size, readonly=False,
+                       meminit=False, map_async=True, lock=False) as db:
+            it = iter(elements)
+            processing = True
+            while processing:
+                with db.begin(write=True) as txn:
+                    for _ in range(commit_every):
+                        try:
+                            payload = pyarrow.serialize(next(it)).to_buffer()
+                            txn.put(self.get_next_key(), payload)
+                            del payload
+                        except StopIteration:
+                            processing = False
+                    self.write_len(txn)
