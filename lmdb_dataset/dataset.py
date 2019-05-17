@@ -1,6 +1,7 @@
 import os
 import lmdb
 import pyarrow
+import random
 
 from torch.utils.data import Dataset
 
@@ -37,3 +38,9 @@ class LMDBDataset(Dataset):
 
     def __repr__(self):
         return self.__class__.__name__ + ' (' + self.db_path + ')'
+
+    def shuffle(self):
+        indices = list(range(len(self)))
+        random.shuffle(indices)
+        for idx in indices:
+            yield self[idx]
