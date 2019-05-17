@@ -7,7 +7,7 @@ from lmdb_dataset.dataset import LMDBDataset
 
 
 class LMDBDatasetWriter:
-    def __init__(self, dataset_path, map_size=1099511627776 * 10):
+    def __init__(self, dataset_path, map_size=10):
         try:
             os.makedirs(dataset_path)
             self.count = 0

@@ -8,7 +8,7 @@ from .utils import encode_key
 
 
 class LMDBDataset(Dataset):
-    def __init__(self, db_path, subset_n=None):
+    def __init__(self, db_path, subset_n=None, map_size=10):
         super().__init__()
         self.db_path = db_path
         self.env = lmdb.open(db_path, subdir=os.path.isdir(db_path),
