@@ -41,7 +41,6 @@ class LMDBDataset(Dataset):
 
     def close(self):
         if self.db:
-            self.db.sync()
             self.db.close()
         self.db = None
         self.use_count = 0
