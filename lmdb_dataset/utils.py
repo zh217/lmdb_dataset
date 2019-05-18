@@ -15,6 +15,6 @@ def parallel_map(iterable, func, n_procs, *, chunksize=1, buffer_ratio=2, **pool
             yield x
 
     with Pool(processes=n_procs, **pool_args) as pool:
-        for result in pool.imap(func, pre_throttle(iterable), chunksize=chunksize):
+        for result in pool.imap_unordered(func, pre_throttle(iterable), chunksize=chunksize):
             semaphore.release()
             yield result
