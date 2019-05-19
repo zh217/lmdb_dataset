@@ -54,7 +54,7 @@ class LMDBDatasetWriter:
         if not self.db:
             self.db = lmdb.open(self.dataset_path, subdir=True,
                                 map_size=self.map_size, readonly=False,
-                                meminit=False, map_async=True, lock=False)
+                                meminit=False, map_async=True, lock=True)
         self.use_count += 1
         return self.db
 
