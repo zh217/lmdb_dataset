@@ -25,7 +25,7 @@ class LMDBDataset(Dataset):
             except:
                 self.keys = None  # [txt_utils.encode_key(i) for i in range(self.length)]
         if limit < 0:
-            self.limit = self.length + self.limit
+            self.limit = self.length + limit
         else:
             self.limit = limit
         if offset < 0:
