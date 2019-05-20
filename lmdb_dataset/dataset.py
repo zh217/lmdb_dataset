@@ -9,7 +9,7 @@ from .utils import encode_key
 
 
 class LMDBDataset(Dataset):
-    def __init__(self, db_path, readahead=True, restart_every=-1, limit=-1, offset=0):
+    def __init__(self, db_path, readahead=True, restart_every=-1, limit=0, offset=0):
         super().__init__()
         self.db_path = db_path
         self.use_count = 0
@@ -24,7 +24,10 @@ class LMDBDataset(Dataset):
                 self.keys = pyarrow.deserialize(txn.get(b'__keys__'))
             except:
                 self.keys = None  # [txt_utils.encode_key(i) for i in range(self.length)]
-        self.limit = limit
+        if limit < 0:
+            self.limit = self.length + self.limit
+        else:
+            self.limit = limit
         if offset < 0:
             self.offset = self.length + offset
         else:
@@ -59,7 +62,7 @@ class LMDBDataset(Dataset):
 
     def __len__(self):
         l = self.length - self.offset
-        if self.limit >= 0:
+        if self.limit > 0:
             l = min(self.limit, l)
         return l
 
