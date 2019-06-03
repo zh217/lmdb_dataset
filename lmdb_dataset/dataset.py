@@ -9,7 +9,7 @@ from .utils import encode_key
 
 
 class LMDBDataset(Dataset):
-    def __init__(self, db_path, readahead=True, restart_every=-1, limit=0, offset=0):
+    def __init__(self, db_path, readahead=True, restart_every=-1, limit=0, offset=0, transform=lambda item: item):
         super().__init__()
         self.db_path = db_path
         self.use_count = 0
@@ -17,6 +17,7 @@ class LMDBDataset(Dataset):
         self.restart_every = restart_every
         self.readahead = readahead
         self.db = None
+        self.transform = transform
 
         with self.get_db().begin(write=False) as txn:
             self.length = int(pyarrow.deserialize(txn.get(b'__len__')))
@@ -58,7 +59,8 @@ class LMDBDataset(Dataset):
             else:
                 k = encode_key(index + self.offset)
             byteflow = txn.get(k)
-        return pyarrow.deserialize(byteflow)
+        item = pyarrow.deserialize(byteflow)
+        return self.transform(item)
 
     def __len__(self):
         l = self.length - self.offset
