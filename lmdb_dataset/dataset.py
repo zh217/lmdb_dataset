@@ -1,9 +1,9 @@
+from torch.utils.data import Dataset
+
 import os
 import lmdb
 import pyarrow
 import random
-
-from torch.utils.data import Dataset
 
 from .utils import encode_key
 
