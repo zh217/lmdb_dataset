@@ -18,3 +18,13 @@ def parallel_map(iterable, func, n_procs, *, chunksize=1, buffer_ratio=2, **pool
         for result in pool.imap_unordered(func, pre_throttle(iterable), chunksize=chunksize):
             semaphore.release()
             yield result
+
+
+def iter_dataset(dset):
+    """
+    Necessary because native pytorch implementation of __iter__ on Dataset is problematic
+    :param dset:
+    :return:
+    """
+    for i in range(len(dset)):
+        yield dset[i]
