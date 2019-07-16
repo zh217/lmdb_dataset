@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 
 
 class InterleaveDataset(Dataset):
-    def __init__(self, *datasets):
+    def __init__(self, *datasets, interleave=True):
         super().__init__()
         self.datasets = list(datasets)
         self.lengths = [len(d) for d in self.datasets]
@@ -10,7 +10,8 @@ class InterleaveDataset(Dataset):
         self.indices = []
         for i, l in enumerate(self.lengths):
             self.indices += list((i, k) for k in range(l))
-        self.indices.sort(key=lambda mi: (mi[1] / self.lengths[mi[0]], mi[0]))
+        if interleave:
+            self.indices.sort(key=lambda mi: (mi[1] / self.lengths[mi[0]], mi[0]))
 
     def __getitem__(self, index):
         db_idx, item_idx = self.indices[index]
