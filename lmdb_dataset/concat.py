@@ -23,7 +23,7 @@ class InterleaveDataset(Dataset):
         return self.__class__.__name__ + repr(self.datasets)
 
 
-class ConcatDatabase(Dataset):
+class ConcatDataset(Dataset):
     def __init__(self, *datasets):
         super().__init__()
         self.datasets = list(datasets)
