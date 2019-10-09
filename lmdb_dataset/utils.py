@@ -28,3 +28,17 @@ def iter_dataset(dset):
     """
     for i in range(len(dset)):
         yield dset[i]
+
+
+def stride_list(original, world_size, rank):
+    l = len(original)
+    l = l // world_size * world_size
+    original = original[:l]
+    return original[rank::world_size]
+
+
+if __name__ == '__main__':
+    l = list(range(100))
+    print(stride_list(l, 10, 0))
+    print(stride_list(l, 10, 5))
+    print(stride_list(l, 10, 9))
