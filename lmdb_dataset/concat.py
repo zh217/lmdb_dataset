@@ -6,6 +6,7 @@ class InterleaveDataset(Dataset):
         super().__init__()
         self.datasets = list(datasets)
         self.lengths = [len(d) for d in self.datasets]
+        offset = offset % sum(self.lengths)
         self.length = sum(self.lengths) - offset
         self.offset = offset
         self.indices = []
