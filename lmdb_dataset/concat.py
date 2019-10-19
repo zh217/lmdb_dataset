@@ -37,6 +37,11 @@ class ConcatDataset(Dataset):
         for i, l in enumerate(self.lengths):
             self.indices += list((i, k) for k in range(l))
         self.last_db = None
+        for d in self.datasets:
+            try:
+                d.close()
+            except:
+                pass
 
     def __getitem__(self, index):
         db_idx, item_idx = self.indices[index + self.offset]
