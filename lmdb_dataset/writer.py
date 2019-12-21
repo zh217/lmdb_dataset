@@ -34,17 +34,20 @@ class LMDBDatasetWriter:
     def write_data(self, elements, *, commit_every=100):
         it = iter(elements)
         processing = True
+        written = 0
         while processing:
             with self.get_db().begin(write=True) as txn:
                 for _ in range(commit_every):
                     try:
                         payload = pyarrow.serialize(next(it)).to_buffer()
                         txn.put(self.get_next_key(), payload)
+                        written += 1
                         del payload
                     except StopIteration:
                         processing = False
                 self.write_len(txn)
         self.close()
+        return written
 
     def get_db(self):
         if self.use_count == self.restart_every:
