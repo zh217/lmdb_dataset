@@ -2,10 +2,9 @@ from setuptools import setup
 
 setup(
     name='lmdb_dataset',
-    version='',
+    version='0.0.1',
     packages=['lmdb_dataset'],
     install_requires=[
-        # 'pytorch',
         'lmdb>=0.94.0',
         'pyarrow>=0.13.0'
     ],
